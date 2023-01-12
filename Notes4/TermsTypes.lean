@@ -1,4 +1,4 @@
--- import Mathlib.Algebra.Group.Basic
+import Mathlib.Algebra.Group.Basic
 
 /- 
 
@@ -27,6 +27,7 @@ real numbers. The latter inputs _functions_ ℕ → ℚ and outputs ℝ.
 #check UInt64 
 #check Float 
 #check String 
+#check List
 
 -- Other types are defined in libraries 
 #check Group 
@@ -36,8 +37,10 @@ real numbers. The latter inputs _functions_ ℕ → ℚ and outputs ℝ.
 -- From these we can iteratively make function types 
 #check Float → String 
 #check (ℕ → ℕ) → ℕ  
+#check ℕ → (ℕ → ℕ) 
+-- #check ℕ × ℕ → ℕ 
 -- By convention we right associate iterated function types 
-#check String → (ℤ → Bool) 
+#check String → (ℤ → Bool) → Prop 
 -- Note the lack of parenthesis 
 
 /- 
@@ -59,6 +62,9 @@ keyword opaque
 
 -- This tells Lean that we have a string that 
 opaque s : String 
+#check s 
+-- #eval s 
+axiom zeus : Bool 
 /-
 What do we know about it? Nothing. Opaque and its cousin axiom should 
 be avoided
@@ -66,20 +72,25 @@ be avoided
 We can build strings use the def keyword. 
 -/
 def better : String := "Better" 
+#check better 
+#eval better 
 -- or integers 
 def myfav : UInt8 := 10 
 def legit : Bool := true 
+example : Float := 12395959594848494949
 
 -- Variables can be declared using the variable keyword 
 variable (x : ℤ) 
+#check x 
 variable (u v w : String) 
+#check v  
 
 /- 
 These are usually called free variables. Bound variables appear 
 in one of the two ways to make new terms from old. 
 
 In function application, we can combine a term (f : τ → σ) and a 
-term (t : τ) to get a term of type σ. This is denoted by f t. 
+term (t : τ) to get a term of type σ. This is denoted by f t, eg f(t) in math.  
 
 In function abstraction, we given a variable (x: τ) and a term 
 (s : σ) that may involve x we can form the function that we would 
@@ -96,7 +107,9 @@ def fancy (n : ℕ) : ℕ := 3*n+4
 def lamAbst : ℕ → String := λ s => toString s 
 
 -- We write application of function as concatentation. 
-#check funFun better 
+#check funFun better
+#eval funFun better 
+#reduce funFun better 
 
 -- Note that types need to match 
 #check funFun myfav 
@@ -112,8 +125,10 @@ by default.
 Multivariable functions come from iterating →. Below we make a 
 function of two variables of type the natural numbers. 
 -/
-def biggest : ℕ → ℕ → ℕ := fun n => fun m => max n m 
-def biggest' : ℕ → ℕ → ℕ := fun n m => max n m 
+def biggest : ℕ → ℕ → ℕ := 
+  fun n => fun m => max n m 
+def biggest' : ℕ → ℕ → ℕ := 
+  fun n m => max n m 
 def biggest'' (n m : ℕ) : ℕ := max n m 
 
 /- 
