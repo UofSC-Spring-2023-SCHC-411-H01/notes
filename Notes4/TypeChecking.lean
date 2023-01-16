@@ -46,8 +46,36 @@ the same for variables.
 
 The final two rules describe how function application and 
 abstraction interact with typing. 
-
 -/
+
+def sadFace : String := sorry 
+
+#check sadFace -- type checks correctly 
+
+variable (s : String) 
+
+#check s -- type checks correctly  
+
+-- use a "general" type α 
+variable { α : Type } 
+
+def sumin : α := sorry 
+
+#check sumin 
+
+variable (a₀ : α) 
+
+#check a₀  
+
+variable { β : Type } (f : α → β) 
+
+#check f a₀  -- good 
+
+def myTerm (a : α) : β := sorry  
+
+def myFun : α → β := fun a => myTerm a  
+
+#check @myFun α β 
 
 /- 
 Types have terms themselves in Lean 
@@ -72,6 +100,32 @@ other terms in C.
 
 Let's do an example. We mark it with sorry to tone down 
 the error to a warning as we proceed. 
+-/
+
+-- Common types are inhabited 
+example : String := "" 
+example : Nat := 0 
+example : Int := 0 
+example : Float := 0.0 
+example : Bool := true 
+example : Char := ⟨0,(by simp)⟩  
+
+/-
+A generic type build from base types by making function may 
+not have a term. 
+-/
+-- Can you fill this in? 
+example : α → β := sorry 
+
+-- How about 
+example : α → α := sorry 
+
+-- Or 
+example : α → β → α := sorry 
+
+/-
+Let's look a more general algorithm in a more complex 
+examples. 
 -/
 
 -- We want a term of this type 
