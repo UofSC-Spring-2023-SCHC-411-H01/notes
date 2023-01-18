@@ -175,17 +175,17 @@ def List.shuffle {α : Type} : List α → List α → List α
 We can also include parameters in the function definitions
 -/ 
 
-def Nat.exp (base : Nat) : Nat → Nat 
+def exp (base : Nat) : Nat → Nat 
   | 0 => 1 
-  | n+1 => (Nat.exp base n)*base 
+  | n+1 => (exp base n)*base 
 
-def Nat.exp' : Nat → Nat → Nat 
+def exp' : Nat → Nat → Nat 
   | _, 0 => 1 
-  | base, n+1 => (Nat.exp' base n)*base 
+  | base, n+1 => (exp' base n)*base 
 
-#eval Nat.exp 2 10 
-#eval Nat.exp' 2 10 
+#eval exp 2 10 
+#eval exp' 2 10 
 
 -- These are the same so we should prove it
-theorem exp_eq (n m : Nat) : Nat.exp n m = Nat.exp' n m := sorry 
+theorem exp_eq (n m : Nat) : exp n m = exp' n m := sorry 
 -- More on this next time. 
