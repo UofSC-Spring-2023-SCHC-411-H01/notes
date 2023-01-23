@@ -48,8 +48,8 @@ inductive Example where
  | X (eg : Example) 
  | Y (eg : Example) 
 
-example : Example.X (Example.Y base) = Example.Y (Example.X base) := by 
-  rfl 
+-- example : Example.X (Example.Y base) = Example.Y (Example.X base) := by 
+--   rfl 
 
 -- Here is List
 inductive List (α : Type) where 
@@ -187,5 +187,5 @@ def exp' : Nat → Nat → Nat
 #eval exp' 2 10 
 
 -- These are the same so we should prove it
-theorem exp_eq (n m : Nat) : exp n m = exp' n m := sorry 
+-- theorem exp_eq (n m : Nat) : exp n m = exp' n m := sorry 
 -- More on this next time. 
