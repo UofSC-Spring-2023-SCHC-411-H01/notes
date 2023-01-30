@@ -19,6 +19,10 @@ that can be stated in Lean will have a proof. For example,
 -/ 
 theorem crazy : ∀ (n : ℕ), Nat.Prime n := sorry 
 
+def notGood : Prop := ∀ (n : ℕ), Nat.Prime n 
+
+theorem also_crazy : notGood := sorry 
+
 end Intro 
 /- 
 Under the rules of propositional and higher logics, there are 
@@ -28,7 +32,7 @@ of inference_.
 
 The connectives in propositional logic are 
 - implication : p → q 
-- conjunction : p ∧ q 
+- conjunction : p ∧ q  
 - disjunction : p ∨ q 
 - negation : ¬ p 
 - bi-implication : p ↔ q 
@@ -74,6 +78,13 @@ example (h : p) (f : p → q) : q := by
   apply f
   exact h
 
+example (h : p) : p := by 
+  exact h
+
+example : p → p := by 
+  intro h
+  exact h
+
 /- 
 In Lean, propositional implication is a function type. Application is 
 elimination. The tactic `apply` allows us to replace a goal `β` with 
@@ -99,9 +110,25 @@ elimination rules `left` and `right`.
 
 -/
 
-example : (p ∧ q → r) → p → q → r := sorry 
+example (u v w : Prop) : (u ∧ v → w) → u → v → w := by
+  intro h hp hq 
+  apply h
+  apply And.intro 
+  · exact hp
+  · exact hq 
 
-example (h : r → p) (h' : r → q) : r → p ∧ q := sorry 
+example : (p ∧ q) → p := by 
+  intro h
+  exact h.left
+
+example : (p ∧ q) ∧ r → p ∧ q ∧ r := by 
+  sorry 
+
+example (h : r → p) (h' : r → q) : r → p ∧ q := by 
+  intro h₃ 
+  apply And.intro 
+  . exact h h₃ 
+  . exact h' h₃ 
 
 /- 
 Disjunction is also its own type. 
@@ -121,9 +148,16 @@ Disjunction has two introduction rules, intro left or `inl` and intro right or `
 It's elimination rule is derived from the fact it is an inductive type. 
 -/
 
-example : (p → q) → (q → q ∨ r) := sorry 
+example : (p → q) → (q → q ∨ r) := by
+  intro _ hq 
+  exact .inl hq  
 
-example : (p ∨ q → r) → (p → r) → q → r := sorry 
+example : p ∨ q → (p → r) → (q → r) → r := by 
+  intro h₁ h₂ h₃
+  match h₁ with 
+  | .inl h => exact h₂ h 
+  | .inr h => exact h₃ h 
+
 
 /- 
 Negatation relies on `False : Prop`. 
