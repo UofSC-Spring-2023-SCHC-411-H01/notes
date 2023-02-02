@@ -103,15 +103,46 @@ example (h : ∃ m, ∀ n, leSquare n m) : False := by
 We can commute quantifiers of the same type. 
 -/
 
-example : ∀ a, ∀ b, Q a b ↔ ∀ b, ∀ a, Q a b := sorry 
+example : (∀ a, ∀ b, Q a b) ↔ ∀ b, ∀ a, Q a b := by
+  apply Iff.intro
+  · intro h 
+    intro b a 
+    exact h a b 
+  · intro h 
+    intro a b 
+    exact h b a 
 
-example : ∃ a, ∃ b, Q a b ↔ ∃ b, ∃ a, Q a b := sorry 
+example : (∃ a, ∃ b, Q a b) ↔ ∃ b, ∃ a, Q a b := by 
+  apply Iff.intro
+  · intro h 
+    apply Exists.elim h 
+    intro a 
+    intro h'
+    apply Exists.elim h'
+    intro b h''
+    apply Exists.intro b
+    apply Exists.intro a 
+    exact h''
+  · intro h 
+    apply Exists.elim h 
+    intro b 
+    intro h'
+    apply Exists.elim h'
+    intro a h''
+    apply Exists.intro a
+    apply Exists.intro b 
+    exact h''
 
 /- 
 Some other examples 
 -/
 
-example : ∃ a, ¬ P a → ¬ ∀ a, P a := sorry 
+example : (∃ a, ¬ P a) → ¬ ∀ a, P a := by
+  intro h n
+  apply Exists.elim h 
+  intro a₀ h'
+  apply h'
+  exact n a₀ 
 
 example (a : α) (h : ¬ ∀ a, P a) : ∃ a, ¬ P a := sorry 
 
