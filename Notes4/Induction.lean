@@ -34,9 +34,9 @@ the base.
 theorem mul_of_mul_base_exp (a b c : ℕ) : exp (a*b) c = (exp a c) * exp b c := by 
   match c with 
   | 0 => simp only [exp] 
-  | c+1 => 
-    simp only [exp,Nat.add] 
-    rw [mul_of_mul_base_exp a b c]
+  | z+1 => 
+    simp only [exp,Nat.add]
+    rw [mul_of_mul_base_exp a b z]
     ac_rfl
 
 /-
@@ -72,10 +72,10 @@ example (n : ℕ) (l : List α) : n*(l.length) = (iterateAppend n l).length := b
   | zero => 
     simp only [iterateAppend,length]
     rw [Nat.zero_mul]
-  | succ n' ih => 
+  | succ n' inductionHyp => 
     simp [iterateAppend,length]
     rw [Nat.succ_mul]
-    rw [ih]
+    rw [inductionHyp]
     ac_rfl 
 
 -- Using `induction'`
@@ -88,6 +88,56 @@ example (n : ℕ) (l : List α) : n*(l.length) = (iterateAppend n l).length := b
     rw [indhyp]
     ac_rfl 
 
-example (n m : ℕ) : n*m = m*n := sorry 
+#check Nat.mul
+
+open Nat
+
+def times : ℕ → ℕ → ℕ  
+  | _, 0 => 0 
+  | a , b+1 => times a b + a 
+
+example (n m : ℕ) : times n m = times m n := by 
+  induction m with 
+  | zero => 
+    induction n with 
+      | zero => rfl 
+      | succ n' ih => 
+        simp [times] at *
+        exact ih
+  | succ m' ih => 
+    induction n with 
+      | zero => 
+        simp [times] at *
+        exact ih 
+      | succ n' ih' => 
+        simp [times] at *
+        rw [ih]
+        sorry 
+
+theorem zero_times (n : ℕ) : times 0 n = 0 := by
+  match n with 
+  | 0 => simp 
+  | n'+1 => 
+    simp [times]
+    exact zero_times n'
+
+theorem succ_times (n m : ℕ) : times (n+1) m = times n m + m := by 
+  match m with 
+  | 0 =>
+    simp [times]
+  | m'+1 => 
+    simp [times]
+    rw [succ_times n m']
+    ac_rfl
+
+theorem times_comm (n m : ℕ) : times n m = times m n := by 
+  match n,m with 
+  | n, 0 => 
+    simp [times]
+    rw [zero_times]  
+  | n, m'+1 => 
+    simp [times]
+    rw [succ_times]
+    rw [times_comm n m']
 
 example (a n m : ℕ) : a*(m + n) = a*m + a*n := sorry 
