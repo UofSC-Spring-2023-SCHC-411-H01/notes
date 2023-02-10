@@ -11,6 +11,9 @@ open Function
 
 variable {α β γ δ : Type} (f : α → β) (g : β → γ) (h : γ → δ)
 
+#check Function.comp
+
+-- \circ ∘ 
 example : (h ∘ g) ∘ f = h ∘ (g ∘ f) := by 
   apply funext
   intro x

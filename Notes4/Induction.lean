@@ -113,31 +113,39 @@ example (n m : ℕ) : times n m = times m n := by
         simp [times] at *
         rw [ih]
         sorry 
-
+@[simp]
 theorem zero_times { n: ℕ } : times 0 n = 0 := by
   match n with 
   | 0 => simp 
   | n'+1 => 
     simp [times]
-    exact zero_times
+    exact zero_times 
 
+@[simp]
 theorem succ_times { n m : ℕ } : times (n+1) m = times n m + m := by 
   match m with 
   | 0 =>
     simp [times]
   | m'+1 => 
     simp [times]
-    rw [succ_times]
+    rw [@succ_times n m']
     ac_rfl
 
 theorem times_comm (n m : ℕ) : times n m = times m n := by 
   match n,m with 
   | n, 0 => 
     simp [times]
-    rw [zero_times]  
+    -- rw [zero_times]  
   | n, m'+1 => 
     simp [times]
-    rw [succ_times]
+    -- rw [succ_times]
     rw [times_comm n m']
 
-example (a n m : ℕ) : times a (m + n) = times a m + times a n := sorry 
+example (a n m : ℕ) : times a (m + n) = times a m + times a n := by 
+  induction a with
+  | zero => simp
+  | succ b ih => 
+    simp only [succ_times]
+    rw [ih]
+    ac_rfl
+
