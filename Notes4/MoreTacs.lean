@@ -50,9 +50,6 @@ example (h' : Bijective f) : Injective f := by
   have ⟨inj,_⟩ := h' 
   assumption 
 
-example : Injective (g ∘ f) → Injective f := sorry 
-
-example : Surjective (g ∘ f) → Surjective f := sorry 
 /- 
 `let` is similar to `have` but is meant for data-carring types while `have` is 
 for `Prop`
@@ -79,11 +76,38 @@ example (a : ℤ) (f : ℤ → ℤ) : translate (translate f a) (-a) = f := by
 /-
 More generally `calc` blocks can be used for transitive relations. 
 -/
-
 example (p q r : Prop) (h : p ↔ q) (h' : q ↔ r) : p ↔ r := by 
   calc
     p ↔ q := by exact h
     _ ↔ r := by exact h'
 
-#print Equiv
+/-
+Here is `Nat.add`'s definition but with a new name
+-/
+def plus (m n : ℕ) : ℕ := 
+  match n with 
+  | 0 => m 
+  | n'+1 => .succ (plus m n')
 
+/- 
+Let's check that if `m₁ ≤ m₂` then `m₁ ≤ m₂ +1` 
+-/ 
+theorem leq_succ_of_leq (m n : Nat) (h : m ≤ n) : m ≤ plus n 1 := by 
+  match n with 
+  | 0 => 
+    have meq0 : m = 0 := Nat.eq_zero_of_le_zero h
+    rw [meq0]
+    simp
+  | n'+1 => 
+    simp [plus]
+    calc 
+      m ≤ n'+1 := by exact h 
+      _ ≤ (n'+1)+1 := by exact Nat.le_succ _  
+
+theorem succ_leq_succ_of_leq (m n a : Nat) (h : m ≤ n) : plus m a ≤ plus n a := by 
+  match a with 
+  | 0 => simp [plus]; assumption 
+  | b+1 => 
+    simp [plus] 
+    apply Nat.succ_le_succ
+    exact succ_leq_succ_of_leq m n b h
