@@ -14,25 +14,41 @@ variable (α β γ : Type) (f : α → β) (g : β → γ)
 
 open Function 
 
-example : Injective (g ∘ f) → Injective f := by sorry 
+example : Injective (g ∘ f) → Injective f := by 
+  intro h a₁ a₂ h'
+  apply h
+  simp [h']
 
-example : Surjective (g ∘ f) → Surjective g := by sorry 
+example : Surjective (g ∘ f) → Surjective g := by 
+  intro h s
+  have ⟨a,h'⟩ := h s
+  apply Exists.intro
+  exact h'
 
 /-
 What do the proof terms look like? 
 -/ 
 
-example : Injective (g ∘ f) → Injective f := by 
-  show_term {sorry} 
+example : Injective (g ∘ f) → Injective f := fun h _ _ h' => h (congrArg g h')
+  -- show_term {
+  -- intro h a₁ a₂ h'
+  -- apply h
+  -- exact congrArg g h' }
 
 -- We can then do this
 example : Injective (g ∘ f) → Injective f := sorry 
 
 example : Surjective (g ∘ f) → Surjective g := by 
-  show_term {sorry}
+  show_term {
+  intro h s
+  have ⟨a,h'⟩ := h s
+  apply Exists.intro
+  exact h'} 
 
 -- And this 
-example : Surjective (g ∘ f) → Surjective g := sorry 
+example : Surjective (g ∘ f) → Surjective g := fun h s =>
+  match h s with
+  | Exists.intro a h' => Exists.intro (f a) h'
 
 end 
 /- 

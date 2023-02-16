@@ -91,7 +91,8 @@ def plus (m n : ℕ) : ℕ :=
 
 /- 
 Let's check that if `m₁ ≤ m₂` then `m₁ ≤ m₂ +1` 
--/ 
+-/
+
 theorem leq_succ_of_leq (m n : Nat) (h : m ≤ n) : m ≤ plus n 1 := by 
   match n with 
   | 0 => 
