@@ -1,4 +1,5 @@
 import Mathlib.Data.Rat.Basic 
+import Mathlib.CategoryTheory.Bicategory.Basic
 
 /- 
 We have see how structures as a way to carry around addition data. 
@@ -15,6 +16,12 @@ not a good idea.
 (Type)Classes provide an answer to this. The syntax looks very 
 similar to a structure. 
 -/
+
+example (q r : ℚ) : ℚ := q+r 
+
+example : Add ℚ := inferInstance 
+
+example : ℚ := default 
 
 class LawlessGroup (α : Type) where 
   unit : α 
@@ -47,3 +54,33 @@ example : ℕ → ℕ → ℕ := LawlessGroup.mul
 open LawlessGroup 
 
 example : ℕ → ℕ := inv
+
+#print Inhabited 
+#print Nonempty 
+
+instance myInstance { α β : Type } [ Inhabited α ] (f : α → β) : Inhabited β := 
+  { default := f default }
+#check myInstance 
+example (β : Type) (f : ℕ → β) : Inhabited β := myInstance f 
+
+instance {α β : Type} [Add β] : Add (α → β) where 
+  add := fun f g a => f a + g a   
+
+#check Add
+
+def myAdd {α : Type} [Add α] (l l' : List α) : (List α) := 
+  match l, l' with 
+  | [],_ => [] 
+  | _,[] => [] 
+  | a::as, a'::as' => (Add.add a a') :: myAdd as as'
+
+#eval myAdd [1,2] [3]
+
+instance [Add α] : Add (List α) where 
+  add := myAdd
+
+def myHead { α : Type} [Inhabited α] (l : List α) : α := 
+  match l with 
+  | [] => default 
+  | a::_ => a 
+

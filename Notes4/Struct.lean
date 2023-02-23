@@ -1,7 +1,7 @@
 import Mathlib.Data.Real.Basic
 
 /-
-We have structures already. For example, 
+We have seen structures already. For example, 
 -/ 
 
 namespace Notes 
@@ -20,6 +20,13 @@ structure Point3D (α : Type) where
   xCoord : α 
   yCoord : α 
   zCoord : α 
+
+structure HPoint3D (α β γ : Type) : Type where 
+  xCoord : α 
+  yCoord : β 
+  zCoord : γ 
+
+#check HPoint3D Bool ℝ String 
 
 /-
 You tell Lean you are making a new type which is a structure by 
@@ -43,10 +50,10 @@ with `Point3d`.
 One way looks as follows
 -/
 
-def myPoint : Point3D ℝ where 
-  xCoord := 1 
-  yCoord := 1 
-  zCoord := 1
+def myPoint : Point3D ℝ := 
+  { xCoord := 1 
+    yCoord := 1 
+    zCoord := 1 }
 
 /- Printing `myPoint` shows the alternate syntax for declaring 
 instances of structures -/
@@ -58,10 +65,13 @@ constructor. The default name `mk`. -/
 #check Point3D.mk 
 
 example : Point3D ℝ := Point3D.mk 1 1 1 
+example : HPoint3D ℕ ℚ ℝ := HPoint3D.mk 1 1 1
 
 /- We can change the name of the default constructor if 
 we wish. This is why we can write `And.intro` and `Exists.intro` 
 in place of `And.mk` and `Exists.mk` -/
+
+#check And
 
 structure Point3D' (α : Type) where 
 build:: 
@@ -69,7 +79,7 @@ build::
   yCoord : α 
   zCoord : α 
 
-example : Point3D' ℝ := .build 1 1 1
+example : Point3D ℝ := .mk 1 1 1
 
 -- example : Point3D' ℝ := .mk 1 1 1
 
@@ -99,6 +109,10 @@ example {α : Type} (p : Point4D α) : α := p.toPoint3D.xCoord
 
 example {α : Type} (p : Point3D α) (x : α) : Point3D α := {p with xCoord := x}
 
+def myNewPt : Point3D ℝ := {myPoint with xCoord := 0}
+
+#print myNewPt
+
 /- Often is it useful to provide default values -/
 
 structure UserData where 
@@ -106,9 +120,9 @@ structure UserData where
   uid : ℕ  := 0 
   email : String 
 
-def user : UserData := {email := "ag@email.sc.edu"}
+def andres : UserData := {email := "ag@email.sc.edu"}
 
-#print user 
+#print andres 
 
 /- Lean allows us the flexibility for fields in a structure 
 to depend on other fields -/ 
@@ -130,6 +144,21 @@ example : LawlessGroup where
 
 -- This is not a real group which is why called it lawless. 
 example : LawlessGroup := ⟨ℕ, 37, fun _ _ => 0, (·+1) ⟩
+
+namespace Better 
+
+structure LawlessGroup (G : Type) where 
+  unit : G
+  mul : G → G → G 
+  inv : G → G
+
+structure Group (G : Type) extends LawlessGroup G where 
+  mul_unit : ∀ g, mul g unit = g 
+  unit_mul : ∀ g, mul unit g = g 
+  mul_inv : ∀ g, mul g (inv g) = unit 
+  inv_mul : ∀ g, mul (inv g) g = unit 
+
+end Better
 
 /- Under the hood, a `structure` is essentially a inductive type 
 with a single constructor which is why the following works. -/
