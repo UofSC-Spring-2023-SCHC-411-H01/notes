@@ -1,10 +1,8 @@
 import Notes4.IndPred
 
-open Notes
+open Notes IO
 
-def main (args : List String) : IO Unit :=
-  let l := args.map (fun s => s.toNat!)
-  let sorted := insertSort (·≤·) l
-  println! "{sorted}"
-
-#eval main ["1","21","10"]
+def main (args : List String) : IO Unit := do
+  let nums := args.map (fun s => s.toInt!)
+  let sorted := insertSort (·≤·) nums
+  println s!"{sorted}"
