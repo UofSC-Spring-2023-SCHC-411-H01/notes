@@ -1,10 +1,10 @@
 import Lake
 open Lake DSL
 
-package notes4 
+package notes4
 
 @[default_target]
-lean_lib Notes4 where 
+lean_lib Notes4 where
   moreLeanArgs := #["-DwarningAsError=true", "-Dpp.unicode.fun=true"] -- pretty-prints `fun a ↦ b`
 
 @[default_target]
