@@ -1,4 +1,4 @@
-import Mathlib
+-- import Mathlib
 
 namespace Notes
 
@@ -107,3 +107,31 @@ def greeting : IO Unit := do
 
   stdout.putStrLn s!"Hello, {name}!"
 
+def sum (n : Nat) : IO Unit := do
+  let rec f (n : Nat) :=
+    match n with
+    | 0 => 0
+    | n+1 => n+1 + f n
+  println s!"{f n}"
+
+#eval sum 5
+
+def sum_imp (n : Nat) : IO Unit := do
+  let mut i := 0
+  for j in [0:n+1] do
+    i := i+j
+  println s!"{i}"
+
+#eval sum_imp 3
+
+def sum_imp' (n : Nat) : Nat := Id.run do
+  let mut i := 0
+  let mut j := 0
+  while j ≤ n do
+    i := i + j
+    j := j + 1
+  return i
+
+#eval sum_imp' 3
+
+/- Compute the sum of 1^2+2^2+...+162^2 -/
